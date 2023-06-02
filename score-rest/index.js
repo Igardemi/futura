@@ -67,23 +67,28 @@ app.get('/scores/:user_id', (req, res) => {
    * {"name":"Pablo"}
    */
   app.post('/users', (req, res) => {
-    const newUser = req.body;
+    const userName = req.body.name;
     
-    const User = connection.query('SELECT * FROM users WHERE name = ? LIMIT 1', newUser);
-    if(User.length>0){
-        res.status(200).send('Usuario Localizado');
-    }
-    else{
-    connection.query('INSERT INTO users SET id=null, ?', newUser, (err, result) => {
-      if (err) {
-        console.error('Error al crear el elemento: ', err);
-        res.status(500).send('Error del servidor');
-      } else {
-        res.status(201).send('Usuario creado correctamente');
-      }
+    connection.query('SELECT * FROM users WHERE name = ? LIMIT 1', [userName], (error, results)=>{
+        if (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Error en la consulta a la base de datos' });
+          }
+        if (results.length === 0) {
+            connection.query('INSERT INTO users SET id=null, name = ?', userName, (err, result) => {
+                if (err) {
+                  console.error('Error al crear el elemento: ', err);
+                  res.status(500).send('Error del servidor');
+                } else {
+                    //devolver nuevo usuario.
+                  res.json(result);
+                }
+              });
+          }
+          const usuario = results[0];
+          res.json(usuario);
+        })
     });
-}
-  });
 
 
 // Puerto de escucha
