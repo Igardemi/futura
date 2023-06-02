@@ -1,8 +1,8 @@
 const express = require('express');
 const mysql = require('mysql');
-
+const bodyParser = require('body-parser');
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
 
 // Configuración de la conexión con la base de datos
 const connection = mysql.createConnection({
@@ -45,23 +45,20 @@ app.get('/scores/:user_id', (req, res) => {
  * guardar puntuacion
  * {"user_id":1,"score":14}
  */
-    app.post('/scores', (req, res) => {
-        console.log(req.form);
-
-        let user_id = req.body.user_id;
-        let score = req.body.score;
-        user_id=parseInt(user_id);
-        score = parseInt(score);
-
-        connection.query('INSERT INTO scores (id,user_id,score) VALUES (null, ?, ?)', [user_id, score], (err, result) => {
-          if (err) {
-            console.error('Error al crear el elemento: ', err);
-            res.status(500).send('Error del servidor');
-          } else {
-            res.status(201).send('puntuacion guardada correctamente');
-          }
+      app.get('/scores/:id/:score', (req, res) => {
+          
+          const user_id = req.params.id;
+          const score = req.params.score;
+  
+          connection.query('INSERT INTO scores (id,user_id,score) VALUES (null, ?, ?)',[user_id, score], (err, result) => {
+            if (err) {
+              console.error('Error al crear el elemento: ', err);
+              res.status(500).send('Error del servidor');
+            } else {
+              res.status(201).send('nuevo record guardado correctamente');
+            }
+          });
         });
-      });
   
   /**
    * lOCALIZAR O CREAR USER
@@ -92,8 +89,7 @@ app.get('/scores/:user_id', (req, res) => {
                         res.json(insert[0].id);         
                     });  
                 }               
-            });
-                   
+            });                
         }
         else{  
             let usuario = results[0];
