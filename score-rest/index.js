@@ -33,14 +33,9 @@ app.get('/scores/:user_id', (req, res) => {
         res.status(500).send('Error del servidor');
       } else {
         if (rows.length > 0) {
-          res.json(rows[0]);
+          res.json(rows[0].max_score);
         } else {
-            newUser = {
-                "user_id": null,
-                "max_score": 0
-            };
-          res.send(newUser);
-          //crear usuario.
+          res.send('0');
         }
       }
     });
@@ -48,11 +43,17 @@ app.get('/scores/:user_id', (req, res) => {
  
 /**
  * guardar puntuacion
- * {"id":null,"user_id":1,"score":14}
+ * {"user_id":1,"score":14}
  */
     app.post('/scores', (req, res) => {
-        const nuevaPuntuacion = req.body;
-        connection.query('INSERT INTO scores SET ?',nuevaPuntuacion, (err, result) => {
+        console.log(req.form);
+
+        let user_id = req.body.user_id;
+        let score = req.body.score;
+        user_id=parseInt(user_id);
+        score = parseInt(score);
+
+        connection.query('INSERT INTO scores (id,user_id,score) VALUES (null, ?, ?)', [user_id, score], (err, result) => {
           if (err) {
             console.error('Error al crear el elemento: ', err);
             res.status(500).send('Error del servidor');
@@ -66,27 +67,38 @@ app.get('/scores/:user_id', (req, res) => {
    * lOCALIZAR O CREAR USER
    * {"name":"Pablo"}
    */
-  app.post('/users', (req, res) => {
-    const userName = req.body.name;
+  app.get('/users/:userName', (req, res) => {
+    const userName = req.params.userName;
+    let user_id = null;
     
-    connection.query('SELECT * FROM users WHERE name = ? LIMIT 1', [userName], (error, results)=>{
+    connection.query('SELECT * FROM users WHERE name = ? LIMIT 1;', [userName], (error, results)=>{
         if (error) {
             console.error(error);
             return res.status(500).json({ message: 'Error en la consulta a la base de datos' });
           }
         if (results.length === 0) {
-            connection.query('INSERT INTO users SET id=null, name = ?', userName, (err, result) => {
+            
+            connection.query('INSERT INTO users(name) VALUES (?)',[userName], (err, insertResult) => {
                 if (err) {
                   console.error('Error al crear el elemento: ', err);
                   res.status(500).send('Error del servidor');
-                } else {
-                    //devolver nuevo usuario.
-                  res.json(result);
                 }
-              });
-          }
-          const usuario = results[0];
-          res.json(usuario);
+                else{
+                    connection.query('SELECT id FROM users ORDER BY id DESC LIMIT 1', (err, insert) => {
+                        if (err) {
+                          console.error('Error al crear el elemento: ', err);
+                          res.status(500).send('Error del servidor');
+                        }
+                        res.json(insert[0].id);         
+                    });  
+                }               
+            });
+                   
+        }
+        else{  
+            let usuario = results[0];
+            res.json(usuario.id);
+        }
         })
     });
 
