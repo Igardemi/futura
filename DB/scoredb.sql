@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-06-2023 a las 10:47:10
+-- Tiempo de generación: 03-06-2023 a las 00:40:12
 -- Versión del servidor: 10.4.25-MariaDB
 -- Versión de PHP: 8.1.10
 
@@ -33,6 +33,26 @@ CREATE TABLE `scores` (
   `score` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `scores`
+--
+
+INSERT INTO `scores` (`id`, `user_id`, `score`) VALUES
+(1, 1, 10),
+(2, 1, 12),
+(3, 1, 14),
+(4, 1, 15),
+(15, 1, 14),
+(16, 13, 2),
+(17, 13, 5),
+(18, 13, 6),
+(19, 13, 41),
+(20, 1, 30),
+(21, 1, 14),
+(22, 1, 39),
+(23, 13, 48),
+(24, 67, 2);
+
 -- --------------------------------------------------------
 
 --
@@ -43,6 +63,24 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `name` varchar(22) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `users`
+--
+
+INSERT INTO `users` (`id`, `name`) VALUES
+(1, 'ivan'),
+(3, 'Pablo'),
+(13, 'manuel'),
+(15, 'juan'),
+(25, 'alvaro'),
+(26, 'quevedo'),
+(62, 'manuelito'),
+(63, 'figaro'),
+(64, 'perico'),
+(65, 'lucrecia'),
+(66, 'miguelet'),
+(67, 'esther');
 
 --
 -- Índices para tablas volcadas
@@ -69,13 +107,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `scores`
 --
 ALTER TABLE `scores`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- Restricciones para tablas volcadas
